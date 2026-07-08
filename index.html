@@ -35,12 +35,12 @@ window.PEEPAL_CONFIG = {
   // ---------------------------------------------------------------
   form: {
     // Take your form's URL and swap "/viewform" with "/formResponse"
-    actionUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfZ7ONdRh7fLQq-le6j2_M7YfbVI9hh8AKqQfrK1vZc8QRQXA/viewform?usp=pp_url&entry.1062431560=TYPEHERE,+MESSAGEHERE,+CATHERE,+EDHERE",
+    actionUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfZ7ONdRh7fLQq-le6j2_M7YfbVI9hh8AKqQfrK1vZc8QRQXA/formResponse",
     fields: {
-      type:     "entry.111111111",  // Feedback / Appreciation / Question / Suggestion
-      message:  "entry.222222222",  // The message body
-      category: "entry.333333333",  // Culture / Leadership / etc.
-      edition:  "entry.444444444"   // Edition label, sent automatically
+      type:     "entry.1062431560",  // Feedback / Appreciation / Question / Suggestion
+      message:  "entry.182850470",  // The message body
+      category: "entry.835824740",  // Culture / Leadership / etc.
+      edition:  "entry.2048086917"   // Edition label, sent automatically
     }
   },
 
@@ -50,7 +50,7 @@ window.PEEPAL_CONFIG = {
   // Choose the tab/sheet, publish as CSV, paste that CSV URL below.
   // ---------------------------------------------------------------
   sheet: {
-    csvUrl: "https://docs.google.com/spreadsheets/d/e/REPLACE_WITH_YOUR_SHEET_ID/pub?gid=0&single=true&output=csv",
+    csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUVineFI3psiWOnqP0Tsr6dIqncL-PS2m_eInyorjwNqd_Vahi4JtZ2WYEs1Q8J4mP0UsRxe5OSWV4/pub?gid=384060688&single=true&output=csv",
     // Column headers as they appear in the sheet (edit if you renamed them)
     columns: {
       timestamp: "Timestamp",
@@ -612,19 +612,6 @@ window.PEEPAL_CONFIG = {
           <div class="char-count"><span id="char-num">0</span> / 1000</div>
         </div>
 
-        <div class="field">
-          <label>Category <span class="hint">Optional — helps leadership sort themes</span></label>
-          <div class="chip-row" id="cat-row">
-            <div class="chip" data-value="Culture">Culture</div>
-            <div class="chip" data-value="Leadership">Leadership</div>
-            <div class="chip" data-value="Career growth">Career growth</div>
-            <div class="chip" data-value="Workload">Workload</div>
-            <div class="chip" data-value="Tools & process">Tools & process</div>
-            <div class="chip" data-value="Compensation">Compensation</div>
-            <div class="chip" data-value="Other">Other</div>
-          </div>
-        </div>
-
         <div class="privacy-note">
           <span class="ic">🛡</span>
           <div>
@@ -751,7 +738,6 @@ window.PEEPAL_CONFIG = {
 <script>
   const CFG = window.PEEPAL_CONFIG;
   let selectedType = 'Feedback';
-  let selectedCategory = '';
   let wallData = [];
   let filteredWall = [];
   let slideIndex = 0;
@@ -810,18 +796,6 @@ window.PEEPAL_CONFIG = {
     selectedType = opt.dataset.value;
   });
 
-  document.getElementById('cat-row').addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    document.querySelectorAll('#cat-row .chip').forEach(x => x.classList.remove('selected'));
-    if (selectedCategory === chip.dataset.value) {
-      selectedCategory = '';
-    } else {
-      chip.classList.add('selected');
-      selectedCategory = chip.dataset.value;
-    }
-  });
-
   // ---- Char count ----
   document.getElementById('message').addEventListener('input', (e) => {
     document.getElementById('char-num').textContent = e.target.value.length;
@@ -833,7 +807,18 @@ window.PEEPAL_CONFIG = {
     const msg = document.getElementById('message').value.trim();
     if (!msg) return;
 
-    // Build a hidden iframe target so browser doesn't navigate away
+    // Build payload
+    const payload = {
+      [CFG.form.fields.type]:     selectedType,
+      [CFG.form.fields.message]:  msg,
+      [CFG.form.fields.category]: '',
+      [CFG.form.fields.edition]:  CFG.edition.label
+    };
+
+    console.log('[Peepal] Submitting to:', CFG.form.actionUrl);
+    console.log('[Peepal] Payload:', payload);
+
+    // Method 1: hidden-iframe POST (primary)
     let iframe = document.getElementById('sink');
     if (!iframe) {
       iframe = document.createElement('iframe');
@@ -841,24 +826,25 @@ window.PEEPAL_CONFIG = {
       iframe.style.display = 'none';
       document.body.appendChild(iframe);
     }
-
-    // Build a form pointed at Google, submit to hidden iframe
     const gform = document.createElement('form');
     gform.action = CFG.form.actionUrl;
-    gform.method = 'POST'; gform.target = 'sink';
-    const add = (name, value) => {
+    gform.method = 'POST';
+    gform.target = 'sink';
+    Object.entries(payload).forEach(([name, value]) => {
       const i = document.createElement('input');
       i.type = 'hidden'; i.name = name; i.value = value;
       gform.appendChild(i);
-    };
-    add(CFG.form.fields.type, selectedType);
-    add(CFG.form.fields.message, msg);
-    add(CFG.form.fields.category, selectedCategory || 'Uncategorized');
-    add(CFG.form.fields.edition, CFG.edition.label);
-
+    });
     document.body.appendChild(gform);
     gform.submit();
-    document.body.removeChild(gform);
+    setTimeout(() => { try { document.body.removeChild(gform); } catch(e){} }, 500);
+
+    // Method 2: fetch() backup (in case iframe is blocked)
+    const fd = new FormData();
+    Object.entries(payload).forEach(([k, v]) => fd.append(k, v));
+    fetch(CFG.form.actionUrl, { method: 'POST', mode: 'no-cors', body: fd })
+      .then(() => console.log('[Peepal] Backup fetch sent'))
+      .catch(err => console.warn('[Peepal] Backup fetch error:', err));
 
     // Show success screen
     const isAppreciation = selectedType === 'Appreciation';
@@ -883,9 +869,7 @@ window.PEEPAL_CONFIG = {
     document.getElementById('success-card').classList.remove('show');
     document.getElementById('char-num').textContent = '0';
     document.querySelectorAll('.type-opt').forEach((x,i) => x.classList.toggle('selected', i === 0));
-    document.querySelectorAll('#cat-row .chip').forEach(x => x.classList.remove('selected'));
     selectedType = 'Feedback';
-    selectedCategory = '';
   }
 
   // ---- Appreciation Wall (reads published CSV) ----
@@ -893,7 +877,7 @@ window.PEEPAL_CONFIG = {
     const container = document.getElementById('wall-container');
     container.innerHTML = '<div class="loading">Loading appreciation…</div>';
 
-    if (!CFG.sheet.csvUrl || CFG.sheet.csvUrl.includes([https://docs.google.com/spreadsheets/d/e/2PACX-1vQUVineFI3psiWOnqP0Tsr6dIqncL-PS2m_eInyorjwNqd_Vahi4JtZ2WYEs1Q8J4mP0UsRxe5OSWV4/pub?gid=384060688&single=true&output=csv])) {
+    if (!CFG.sheet.csvUrl || CFG.sheet.csvUrl.includes('REPLACE_WITH_YOUR_SHEET_ID')) {
       // Show sample data so the page looks alive during setup
       wallData = sampleAppreciations();
       renderWall();
