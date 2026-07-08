@@ -655,6 +655,7 @@ window.PEEPAL_CONFIG = {
           <input type="search" id="wall-search" placeholder="Search shout-outs…" />
         </div>
         <div class="wall-actions">
+          <button class="icon-btn" onclick="loadWall()">↻ Refresh</button>
           <button class="icon-btn" onclick="shuffleWall()">⇌ Shuffle</button>
           <button class="icon-btn" onclick="location.hash='#/present'">▶ Presentation mode</button>
         </div>
@@ -878,31 +879,40 @@ window.PEEPAL_CONFIG = {
     container.innerHTML = '<div class="loading">Loading appreciation…</div>';
 
     if (!CFG.sheet.csvUrl || CFG.sheet.csvUrl.includes('REPLACE_WITH_YOUR_SHEET_ID')) {
-      // Show sample data so the page looks alive during setup
+      // Setup mode: show samples so the page still looks alive
+      console.log('[Peepal Wall] No CSV URL configured — showing samples');
       wallData = sampleAppreciations();
       renderWall();
       return;
     }
 
     try {
-      const res = await fetch(CFG.sheet.csvUrl + '&_=' + Date.now());
+      const url = CFG.sheet.csvUrl + '&_=' + Date.now();
+      console.log('[Peepal Wall] Fetching:', url);
+      const res = await fetch(url);
       const text = await res.text();
-      wallData = parseCSV(text).filter(row =>
-        (row[CFG.sheet.columns.type] || '').toLowerCase() === 'appreciation'
-      ).map(row => ({
-        message: row[CFG.sheet.columns.message] || '',
-        edition: row[CFG.sheet.columns.edition] || '',
-        timestamp: row[CFG.sheet.columns.timestamp] || ''
-      })).filter(r => r.message.trim().length > 0);
 
-      if (wallData.length === 0) {
-        wallData = sampleAppreciations();
-      }
+      const rows = parseCSV(text);
+      console.log('[Peepal Wall] Rows from sheet:', rows.length);
+      if (rows.length > 0) console.log('[Peepal Wall] Column headers found:', Object.keys(rows[0]));
+
+      wallData = rows
+        .filter(row => (row[CFG.sheet.columns.type] || '').trim().toLowerCase() === 'appreciation')
+        .map(row => ({
+          message: (row[CFG.sheet.columns.message] || '').trim(),
+          edition: (row[CFG.sheet.columns.edition] || '').trim(),
+          timestamp: (row[CFG.sheet.columns.timestamp] || '').trim()
+        }))
+        .filter(r => r.message.length > 0)
+        // Newest first
+        .reverse();
+
+      console.log('[Peepal Wall] Appreciations found:', wallData.length);
       renderWall();
     } catch (err) {
-      console.warn('Wall fetch failed, showing samples:', err);
-      wallData = sampleAppreciations();
-      renderWall();
+      console.warn('[Peepal Wall] Fetch failed:', err);
+      wallData = [];
+      renderWall(true /* fetchFailed */);
     }
   }
 
@@ -917,7 +927,7 @@ window.PEEPAL_CONFIG = {
     ];
   }
 
-  function renderWall() {
+  function renderWall(fetchFailed) {
     const container = document.getElementById('wall-container');
     const q = (document.getElementById('wall-search').value || '').toLowerCase().trim();
     filteredWall = q
@@ -925,7 +935,13 @@ window.PEEPAL_CONFIG = {
       : wallData.slice();
 
     if (filteredWall.length === 0) {
-      container.innerHTML = '<div class="empty-state"><h3>No shout-outs yet</h3><p>Be the first to appreciate someone.</p></div>';
+      if (fetchFailed) {
+        container.innerHTML = '<div class="empty-state"><h3>Couldn\'t load appreciations</h3><p>The sheet might not be published yet, or your connection dropped. <a href="#" onclick="loadWall();return false;" style="color:var(--orange);">Try again</a>.</p></div>';
+      } else if (q) {
+        container.innerHTML = '<div class="empty-state"><h3>No matches</h3><p>Try a different search term.</p></div>';
+      } else {
+        container.innerHTML = '<div class="empty-state"><h3>No shout-outs yet</h3><p>Be the first to appreciate someone. <a href="#/share" style="color:var(--orange);">Share a shout-out →</a></p></div>';
+      }
       return;
     }
 
