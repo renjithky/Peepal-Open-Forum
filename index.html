@@ -840,13 +840,6 @@ window.PEEPAL_CONFIG = {
     gform.submit();
     setTimeout(() => { try { document.body.removeChild(gform); } catch(e){} }, 500);
 
-    // Method 2: fetch() backup (in case iframe is blocked)
-    const fd = new FormData();
-    Object.entries(payload).forEach(([k, v]) => fd.append(k, v));
-    fetch(CFG.form.actionUrl, { method: 'POST', mode: 'no-cors', body: fd })
-      .then(() => console.log('[Peepal] Backup fetch sent'))
-      .catch(err => console.warn('[Peepal] Backup fetch error:', err));
-
     // Show success screen
     const isAppreciation = selectedType === 'Appreciation';
     document.getElementById('submission-form').style.display = 'none';
