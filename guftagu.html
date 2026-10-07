@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guftagu · Peepal</title>
+<meta name="description" content="A space for open, honest conversation at Peepal." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<script>
+window.GUFTAGU_CONFIG = {
+  session: {
+    closesAt: "2026-10-08T18:00:00"
+  },
+  form: {
+    actionUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfZ7ONdRh7fLQq-le6j2_M7YfbVI9hh8AKqQfrK1vZc8QRQXA/formResponse",
+    fields: {
+      type:     "entry.1062431560",
+      message:  "entry.182850470",
+      category: "entry.835824740",
+      edition:  "entry.2048086917"
+    }
+  }
+};
+</script>
+
+<style>
+  :root {
+    --orange: #F58220;
+    --orange-soft: #FDEBD8;
+    --orange-deep: #C4630F;
+    --ink: #1A1A1A;
+    --ink-2: #4A4844;
+    --ink-3: #8A8780;
+    --cream: #FBF8F3;
+    --cream-2: #F5F0E6;
+    --line: #ECE8DF;
+    --white: #FFFFFF;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --serif: 'Fraunces', Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  header {
+    padding: 28px 32px;
+    display: flex;
+    justify-content: center;
+  }
+  header img {
+    height: 28px;
+    width: auto;
+    opacity: 0.85;
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 24px 60px;
+  }
+
+  .stage {
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ---------- HOME ---------- */
+  .wordmark {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(68px, 14vw, 112px);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin: 0 0 20px;
+    color: var(--ink);
+  }
+  .wordmark em {
+    font-style: italic;
+    color: var(--orange);
+    font-weight: 400;
+  }
+
+  .tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-2);
+    margin: 0 0 44px;
+    line-height: 1.4;
+  }
+
+  .countdown {
+    display: inline-flex;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+  .cd-unit { text-align: center; min-width: 48px; }
+  .cd-num {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .cd-sep {
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--ink-3);
+    line-height: 1;
+    font-weight: 400;
+  }
+  .cd-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    margin-top: 8px;
+  }
+  .cd-note {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin: 14px 0 40px;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 28px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    background: var(--ink);
+    color: var(--white);
+    border: none;
+    transition: background .15s;
+  }
+  .cta:hover { background: var(--orange); }
+  .cta-arrow { transition: transform .15s; }
+  .cta:hover .cta-arrow { transform: translateX(2px); }
+
+  /* ---------- SHARE ---------- */
+  .share-head {
+    margin-bottom: 32px;
+  }
+  .share-head h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+    line-height: 1.1;
+  }
+  .share-head h2 em { font-style: italic; color: var(--orange); font-weight: 400; }
+  .share-head p { color: var(--ink-3); font-size: 14px; margin: 0; }
+
+  .type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .type-opt {
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+  }
+  .type-opt .lbl {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink-2);
+    letter-spacing: -0.01em;
+  }
+  .type-opt:hover { border-color: var(--ink-3); }
+  .type-opt.selected {
+    border-color: var(--orange);
+    background: var(--orange-soft);
+  }
+  .type-opt.selected .lbl { color: var(--orange-deep); }
+
+  textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--white);
+    color: var(--ink);
+    resize: vertical;
+    min-height: 160px;
+    line-height: 1.55;
+    text-align: left;
+    transition: border-color .15s;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--orange); }
+  textarea::placeholder { color: var(--ink-3); font-style: italic; }
+
+  .char-count {
+    text-align: right;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 6px;
+  }
+
+  .privacy-note {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin: 18px 0 20px;
+    text-align: center;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 15px;
+    background: var(--ink);
+    color: var(--white);
+    border: none;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background .15s;
+  }
+  .btn-submit:hover { background: var(--orange); }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  .back-link:hover { color: var(--ink); }
+
+  /* ---------- SUCCESS ---------- */
+  .success-tick {
+    font-family: var(--serif);
+    font-size: 52px;
+    color: var(--orange);
+    margin-bottom: 18px;
+    line-height: 1;
+  }
+  .success-stage h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    line-height: 1.1;
+  }
+  .success-stage h2 em { font-style: italic; color: var(--orange); font-weight: 400; }
+  .success-stage p {
+    color: var(--ink-2);
+    margin: 0 0 32px;
+    font-size: 15px;
+  }
+
+  /* ---------- VIEWS ---------- */
+  .view { display: none; width: 100%; }
+  .view.active { display: block; }
+
+  footer {
+    text-align: center;
+    padding: 28px 24px;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 500px) {
+    header { padding: 24px; }
+    .countdown { gap: 14px; }
+    .cd-num, .cd-sep { font-size: 26px; }
+    .type-grid { gap: 8px; }
+    .type-opt { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Peepal" />
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="view active stage" id="view-home">
+    <h1 class="wordmark">Guf<em>tagu</em></h1>
+    <p class="tagline">The kind of conversation we don't always make room for.</p>
+
+    <div class="countdown">
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-hours">–</div>
+        <div class="cd-label">Hours</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-mins">–</div>
+        <div class="cd-label">Minutes</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-secs">–</div>
+        <div class="cd-label">Seconds</div>
+      </div>
+    </div>
+    <div class="cd-note">to drop a thought or question, anonymously.</div>
+
+    <button class="cta" onclick="goShare()">
+      Drop a thought <span class="cta-arrow">→</span>
+    </button>
+  </section>
+
+  <!-- SHARE -->
+  <section class="view stage" id="view-share">
+    <div class="share-head">
+      <h2>A <em>thought</em> or a <em>question</em>?</h2>
+      <p>No names. No sign-in. We'll bring it into the room.</p>
+    </div>
+
+    <form id="submission-form">
+      <div class="type-grid" id="type-grid">
+        <div class="type-opt selected" data-value="Thought">
+          <div class="lbl">A thought</div>
+        </div>
+        <div class="type-opt" data-value="Question">
+          <div class="lbl">A question</div>
+        </div>
+      </div>
+
+      <textarea id="message" maxlength="1000" placeholder="Say it the way you'd want to say it in the room — just without the mic." required></textarea>
+      <div class="char-count"><span id="char-num">0</span> / 1000</div>
+
+      <div class="privacy-note">Fully anonymous. No email, no identifier, no trace.</div>
+
+      <button type="submit" class="btn-submit">Send it in</button>
+    </form>
+
+    <a href="#" onclick="goHome();return false;" class="back-link">← back</a>
+  </section>
+
+  <!-- SUCCESS -->
+  <section class="view stage success-stage" id="view-success">
+    <div class="success-tick">✓</div>
+    <h2 id="success-title">Received.</h2>
+    <p id="success-body">We'll carry it into the conversation.</p>
+    <button class="cta" onclick="resetAndGoShare()">Share another</button>
+    <br/>
+    <a href="#" onclick="goHome();return false;" class="back-link">← back home</a>
+  </section>
+
+</main>
+
+<footer>GUFTAGU · PEEPAL</footer>
+
+<script>
+  const CFG = window.GUFTAGU_CONFIG;
+  let selectedType = 'Thought';
+
+  function show(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    window.scrollTo({top: 0, behavior: 'instant'});
+  }
+  function goHome()  { show('home'); }
+  function goShare() { resetForm(); show('share'); }
+  function resetAndGoShare() { resetForm(); show('share'); }
+
+  function updateCountdown() {
+    const end = new Date(CFG.session.closesAt).getTime();
+    const now = Date.now();
+    let diff = Math.max(0, end - now);
+    const h = Math.floor(diff / 3600000); diff -= h * 3600000;
+    const m = Math.floor(diff / 60000);   diff -= m * 60000;
+    const s = Math.floor(diff / 1000);
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+  }
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  document.getElementById('type-grid').addEventListener('click', (e) => {
+    const opt = e.target.closest('.type-opt');
+    if (!opt) return;
+    document.querySelectorAll('.type-opt').forEach(x => x.classList.remove('selected'));
+    opt.classList.add('selected');
+    selectedType = opt.dataset.value;
+  });
+
+  document.getElementById('message').addEventListener('input', (e) => {
+    document.getElementById('char-num').textContent = e.target.value.length;
+  });
+
+  document.getElementById('submission-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('message').value.trim();
+    if (!msg) return;
+
+    const payload = {
+      [CFG.form.fields.type]:     selectedType,
+      [CFG.form.fields.message]:  msg,
+      [CFG.form.fields.category]: '',
+      [CFG.form.fields.edition]:  'Guftagu 01'
+    };
+
+    let iframe = document.getElementById('sink');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.name = 'sink'; iframe.id = 'sink';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+    }
+    const gform = document.createElement('form');
+    gform.action = CFG.form.actionUrl;
+    gform.method = 'POST';
+    gform.target = 'sink';
+    Object.entries(payload).forEach(([name, value]) => {
+      const i = document.createElement('input');
+      i.type = 'hidden'; i.name = name; i.value = value;
+      gform.appendChild(i);
+    });
+    document.body.appendChild(gform);
+    gform.submit();
+    setTimeout(() => { try { document.body.removeChild(gform); } catch(e){} }, 500);
+
+    if (selectedType === 'Question') {
+      document.getElementById('success-title').innerHTML = 'Your <em>question</em> is in.';
+      document.getElementById('success-body').textContent = "We'll bring it into the room — no name attached.";
+    } else {
+      document.getElementById('success-title').textContent = 'Thank you.';
+      document.getElementById('success-body').textContent = "Your thought is in. We'll carry it into the conversation.";
+    }
+    show('success');
+  });
+
+  function resetForm() {
+    document.getElementById('submission-form').reset();
+    document.getElementById('char-num').textContent = '0';
+    document.querySelectorAll('.type-opt').forEach((x,i) => x.classList.toggle('selected', i === 0));
+    selectedType = 'Thought';
+  }
+</script>
+
+</body>
+</html>
